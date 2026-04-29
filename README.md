@@ -11,7 +11,8 @@ It is useful if you want Swing Music to feel like a normal Windows application i
 - Clean black setup screen for entering your Swing Music server URL.
 - Automatically adds `http://` when you enter only an IP address or domain.
 - Saves the server URL in the user's app data folder.
-- Single application menu option: `Change the URL`.
+- Hidden native title bar with Windows controls overlaid on the app.
+- Transparent in-app `Change URL` control instead of a full menu bar.
 - `Ctrl+L` shortcut to return to the URL setup screen.
 - Custom Swing Music icon for the app and installer.
 - Windows installer built with NSIS.
@@ -74,7 +75,7 @@ dist/
 The main installer file will look like:
 
 ```text
-dist/Swing Music Setup 1.1.0.exe
+dist/Swing Music Setup 1.2.0.exe
 ```
 
 ## Project Structure
@@ -83,8 +84,8 @@ dist/Swing Music Setup 1.1.0.exe
 assets/              App and installer icons
 renderer/            Setup screen HTML and renderer JavaScript
 config.js            Local config loading and saving
-main.js              Electron main process and app menu
-preload.js           Safe bridge between Electron and the setup page
+main.js              Electron main process and window controls
+preload.js           Safe bridge and transparent in-app URL control
 package.json         App scripts and electron-builder config
 ```
 

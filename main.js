@@ -13,23 +13,6 @@ function showSetup() {
   mainWindow.loadFile(path.join(__dirname, 'renderer', 'setup.html'));
 }
 
-function createMenu() {
-  const menu = Menu.buildFromTemplate([
-    {
-      label: 'Change the URL',
-      submenu: [
-        {
-          label: 'Change the URL',
-          accelerator: 'Ctrl+L',
-          click: showSetup
-        }
-      ]
-    }
-  ]);
-
-  Menu.setApplicationMenu(menu);
-}
-
 function createWindow() {
   const config = loadConfig();
 
@@ -40,12 +23,26 @@ function createWindow() {
     minHeight: 620,
     backgroundColor: '#050505',
     icon: iconPath,
+    titleBarStyle: 'hidden',
+    titleBarOverlay: {
+      color: 'rgba(0, 0, 0, 0)',
+      symbolColor: '#f5f5f5',
+      height: 34
+    },
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     }
   });
 
-  createMenu();
+  Menu.setApplicationMenu(null);
+
+  mainWindow.webContents.on('before-input-event', (event, input) => {
+    if (input.control && typeof input.key === 'string' && input.key.toLowerCase() === 'l') {
+      event.preventDefault();
+      showSetup();
+    }
+  });
 
   if (config && config.url) {
     mainWindow.loadURL(config.url);
@@ -62,6 +59,10 @@ ipcMain.handle('save-url', (event, url) => {
 ipcMain.handle('get-url', () => {
   const config = loadConfig();
   return config && config.url ? config.url : '';
+});
+
+ipcMain.handle('change-url', () => {
+  showSetup();
 });
 
 app.whenReady().then(createWindow);
