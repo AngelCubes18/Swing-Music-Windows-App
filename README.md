@@ -1,73 +1,52 @@
 # Swing Music Windows App
 
-A lightweight Windows desktop wrapper for a self-hosted [Swing Music](https://github.com/swing-opensource/swingmusic) server.
+A simple Windows desktop wrapper for a self-hosted [Swing Music](https://github.com/swing-opensource/swingmusic) server.
 
-This app opens your Swing Music Web UI in a native Windows window using Microsoft WebView2. It asks for your Swing Music server URL on first launch, saves it locally, and opens that server automatically after that.
+This app opens your Swing Music Web UI inside a dedicated Electron window. On first launch, it asks for the IP address or URL of your Swing Music web panel, saves it locally, and then opens that server automatically on future launches.
 
-This version replaces the earlier Electron build. The Electron installer was around 95 MB because it bundled Chromium. The native WebView2 build uses the browser runtime already installed on most Windows systems, so the compiled single-file app is about 2 MB on this machine.
+It is useful if you want Swing Music to feel like a normal Windows application instead of keeping it pinned inside a browser tab.
 
 ## Features
 
-- Native C# WinForms app using Microsoft WebView2.
-- Much smaller than the old Electron version.
 - Clean black setup screen for entering your Swing Music server URL.
 - Automatically adds `http://` when you enter only an IP address or domain.
 - Saves the server URL in the user's app data folder.
-- Borderless app window with integrated window controls.
-- `Change URL` button inside the app chrome.
+- Hidden native title bar with Windows controls overlaid on the app.
+- Transparent in-app `Change URL` control instead of a full menu bar.
 - `Ctrl+L` shortcut to return to the URL setup screen.
-- Custom Swing Music app icon.
+- Custom Swing Music icon for the app and installer.
+- Windows installer built with NSIS.
+- Installer allows choosing the installation directory.
 
 ## Requirements
 
-To run the framework-dependent build, Windows needs:
+To run or build from source, install:
 
+- [Node.js](https://nodejs.org/) 18 or newer
+- npm, included with Node.js
 - Windows 10 or newer
-- Microsoft Edge WebView2 Runtime
-- .NET Core Desktop Runtime 3.1
 
-To build from source, install:
+You also need a running Swing Music server. This app does not include the Swing Music server itself; it only opens the web interface.
 
-- .NET SDK 3.1 or newer with Windows desktop support
+## Install Dependencies
 
-This app does not include the Swing Music server itself. It only opens the web interface of a server you already run.
+Clone the repository and install the dependencies:
 
-## Build From Source
-
-Clone the repository:
-
-```powershell
+```bash
 git clone https://github.com/AngelCubes18/Swing-Music-Windows-App.git
 cd Swing-Music-Windows-App
+npm install
 ```
 
-Build the lightweight single-file executable:
+## Run in Development
 
-```powershell
-.\build.ps1
+Start the Electron app locally:
+
+```bash
+npm start
 ```
 
-The output will be created here:
-
-```text
-native-single/Swing Music.exe
-```
-
-You can also run the build command manually:
-
-```powershell
-dotnet publish .\SwingMusic.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -p:DebugSymbols=false -o .\native-single
-```
-
-## Development Run
-
-Run the app directly from source:
-
-```powershell
-dotnet run --project .\SwingMusic.csproj
-```
-
-When the setup screen opens, enter your Swing Music URL, for example:
+If no server URL has been saved yet, the app will open the setup screen. Enter your Swing Music URL, for example:
 
 ```text
 192.168.1.50:1970
@@ -79,29 +58,47 @@ or:
 http://192.168.1.50:1970
 ```
 
+## Build the Windows Installer
+
+Create the Windows executable and installer:
+
+```bash
+npm run build
+```
+
+The build output will be created in:
+
+```text
+dist/
+```
+
+The main installer file will look like:
+
+```text
+dist/Swing Music Setup 1.2.0.exe
+```
+
 ## Project Structure
 
 ```text
-assets/              App icon and setup logo
-ConfigStore.cs       Local config loading and saving
-MainForm.cs          WinForms UI, WebView2 host, window controls
-Program.cs           Application entry point
-SwingMusic.csproj    .NET project and WebView2 dependency
-build.ps1            Release build script
+assets/              App and installer icons
+renderer/            Setup screen HTML and renderer JavaScript
+config.js            Local config loading and saving
+main.js              Electron main process and window controls
+preload.js           Safe bridge and transparent in-app URL control
+package.json         App scripts and electron-builder config
 ```
 
-## Notes For Contributors
+## Notes for Contributors
 
-Do not commit generated build output:
+Do not commit generated files or installed dependencies:
 
 ```text
-bin/
-obj/
-native-dist/
-native-single/
+node_modules/
+dist/
 ```
 
-Those folders are ignored because they can be recreated from source.
+Those folders are ignored because they are large and can be recreated with `npm install` and `npm run build`.
 
 ## License
 

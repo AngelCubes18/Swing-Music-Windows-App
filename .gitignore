@@ -1,8 +1,2 @@
 node_modules/
 dist/
-bin/
-obj/
-native-dist/
-native-single/
-*.user
-*.suo
