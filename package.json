@@ -1,10 +1,16 @@
 {
   "name": "swing-music-app",
   "version": "1.2.0",
+  "description": "Desktop wrapper for a self-hosted Swing Music server.",
+  "author": "AngelCubes18",
+  "license": "GPL-3.0-only",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "build": "electron-builder --win --linux",
+    "build:win": "electron-builder --win",
+    "build:linux": "electron-builder --linux",
+    "pack": "electron-builder --dir"
   },
   "devDependencies": {
     "electron": "^41.3.0",
@@ -14,15 +20,44 @@
     "appId": "com.swingmusic.app",
     "productName": "Swing Music",
     "icon": "assets/swingmusiclogo.ico",
+    "asar": true,
+    "compression": "maximum",
+    "electronLanguages": [
+      "en-US"
+    ],
+    "npmRebuild": false,
+    "files": [
+      "assets/**/*",
+      "renderer/**/*",
+      "config.js",
+      "main.js",
+      "preload.js",
+      "package.json"
+    ],
     "win": {
-      "target": "nsis",
+      "target": [
+        "nsis",
+        "portable"
+      ],
       "icon": "assets/swingmusiclogo.ico"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
+      "artifactName": "${productName}-${version}-windows-${arch}-setup.${ext}",
       "installerIcon": "assets/swingmusiclogo.ico",
       "uninstallerIcon": "assets/swingmusiclogo.ico"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-windows-${arch}-portable.${ext}"
+    },
+    "linux": {
+      "target": [
+        "tar.gz"
+      ],
+      "icon": "assets/swingmusiclogo-rounded-256.png",
+      "category": "AudioVideo",
+      "artifactName": "${productName}-${version}-linux-${arch}.${ext}"
     }
   }
 }
